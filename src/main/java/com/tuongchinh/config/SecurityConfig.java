@@ -24,10 +24,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            );
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll());
 
         return http.build();
     }
@@ -47,8 +46,11 @@ public class SecurityConfig {
                 "http://localhost:3001",
                 "http://127.0.0.1:3001",
                 "https://*.vercel.app",
-                "https://TEN-FE-CUA-BAN.vercel.app"
-        ));
+                "https://*.trycloudflare.com",
+                "https://hoanglayor.id.vn",
+                "https://www.hoanglayor.id.vn",
+                "https://admin.hoanglayor.id.vn",
+                "https://www.admin.hoanglayor.id.vn"));
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
