@@ -506,11 +506,13 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
             <CardContent className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tạm tính:</span>
-                <span className="font-medium">{formatPrice(order.items?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0)}</span>
+                <span className="font-medium">{formatPrice((order.totalPrice || 0) + (order.discountAmount || 0) - (order.shippingFee || 0))}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Phí vận chuyển:</span>
-                <span className="font-medium text-success">Miễn phí</span>
+                <span className={order.shippingFee && order.shippingFee > 0 ? "font-medium" : "font-medium text-success"}>
+                  {order.shippingFee && order.shippingFee > 0 ? `+${formatPrice(order.shippingFee)}` : "Miễn phí"}
+                </span>
               </div>
               {order.voucherCode && (
                 <div className="flex justify-between text-sm text-destructive font-medium">

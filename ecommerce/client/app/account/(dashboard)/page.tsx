@@ -73,24 +73,30 @@ export default function AccountPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status.toUpperCase()) {
-      case "PENDING": return <Clock className="h-4 w-4" />;
+      case "PENDING": 
+      case "PROCESSING": return <Clock className="h-4 w-4" />;
       case "CONFIRMED": return <CheckCircle2 className="h-4 w-4" />;
       case "SHIPPING":
       case "SHIPPED": return <Truck className="h-4 w-4" />;
       case "DELIVERED": return <CheckCircle2 className="h-4 w-4" />;
-      case "CANCELLED": return <XCircle className="h-4 w-4" />;
+      case "CANCELLED": 
+      case "FAILED_DELIVERY": return <XCircle className="h-4 w-4" />;
+      case "REFUNDED": return <CheckCircle2 className="h-4 w-4" />;
       default: return <AlertCircle className="h-4 w-4" />;
     }
   };
 
   const getStatusBadgeClass = (status: string) => {
     switch (status.toUpperCase()) {
-      case "PENDING": return "bg-warning/10 text-warning border-warning/20";
+      case "PENDING": 
+      case "PROCESSING": return "bg-warning/10 text-warning border-warning/20";
       case "CONFIRMED": return "bg-info/10 text-info border-info/20";
       case "SHIPPING":
       case "SHIPPED": return "bg-primary/10 text-primary border-primary/20";
       case "DELIVERED": return "bg-success/10 text-success border-success/20";
-      case "CANCELLED": return "bg-destructive/10 text-destructive border-destructive/20";
+      case "CANCELLED": 
+      case "FAILED_DELIVERY": return "bg-destructive/10 text-destructive border-destructive/20";
+      case "REFUNDED": return "bg-muted text-muted-foreground";
       default: return "bg-muted text-muted-foreground";
     }
   };
@@ -98,11 +104,14 @@ export default function AccountPage() {
   const getStatusLabel = (status: string) => {
     switch (status.toUpperCase()) {
       case "PENDING": return "Chờ xử lý";
+      case "PROCESSING": return "Đang xử lý";
       case "CONFIRMED": return "Đã xác nhận";
       case "SHIPPING":
       case "SHIPPED": return "Đang giao";
       case "DELIVERED": return "Đã giao";
       case "CANCELLED": return "Đã hủy";
+      case "FAILED_DELIVERY": return "Giao thất bại";
+      case "REFUNDED": return "Đã hoàn tiền";
       default: return status;
     }
   };

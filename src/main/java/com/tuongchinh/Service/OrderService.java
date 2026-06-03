@@ -137,10 +137,17 @@ public class OrderService {
             appliedVoucher = voucher;
         }
 
+        if (req.getShippingFee() != null) {
+            total = total.add(req.getShippingFee());
+        }
+
         // 5. Tạo Order
         Order order = new Order();
         order.setUser(userService.findById(userId));
         order.setTotalAmount(total);
+        if (req.getShippingFee() != null) {
+            order.setShippingFee(req.getShippingFee());
+        }
         order.setOrderStatus("PENDING");
         order.setStatus("UNPAID");
         order.setAddress(address);
@@ -434,6 +441,7 @@ public class OrderService {
         res.setTotalPrice(order.getTotalAmount());
         res.setOrderDate(order.getOrderDate());
         res.setDiscountAmount(order.getDiscountAmount());
+        res.setShippingFee(order.getShippingFee());
         res.setCancelReason(order.getCancelReason());
         res.setIsRefundRequested(order.getIsRefundRequested());
         res.setRefundReason(order.getRefundReason());

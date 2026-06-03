@@ -267,8 +267,14 @@ export default function OrderDetailPage({
                 <Separator />
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Tạm tính</span>
-                  <span>{formatCurrency((order.totalPrice || 0) + (order.discountAmount || 0))}</span>
+                  <span>{formatCurrency((order.totalPrice || 0) + (order.discountAmount || 0) - (order.shippingFee || 0))}</span>
                 </div>
+                {order.shippingFee !== undefined && order.shippingFee > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Phí vận chuyển</span>
+                    <span>+{formatCurrency(order.shippingFee)}</span>
+                  </div>
+                )}
                 {order.discountAmount && order.discountAmount > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">

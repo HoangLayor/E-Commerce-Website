@@ -316,7 +316,13 @@ export function CheckoutContent() {
   const isFreeShippingRule = subtotal >= 500000;
   const isFreeShippingPromo = appliedVoucherResult?.type === "SHIPPING";
 
-  const shipping = (isFreeShippingRule || isFreeShippingPromo) ? 0 : (selectedShipping?.price || 0);
+  let shipping = selectedShipping?.price || 0;
+  if (isFreeShippingRule && selectedShipping?.id === "standard") {
+    shipping = 0;
+  } else if (isFreeShippingPromo) {
+    shipping = 0;
+  }
+
   const total = subtotal - discountAmount + shipping;
 
   const canProceed = () => {
@@ -447,6 +453,7 @@ export function CheckoutContent() {
         addressId: selectedAddressId || undefined,
         paymentMethod: paymentMethod.toUpperCase(),
         voucherCode: appliedVoucherResult?.code,
+        shippingFee: shipping,
       });
 
       toast.success("Đặt hàng thành công!");
@@ -832,7 +839,7 @@ export function CheckoutContent() {
                           </div>
                         </div>
                         <span className="font-semibold text-sm">
-                          {method.price === 0 || (isFreeShippingRule && method.id === "standard") ? (
+                          {method.price === 0 || (isFreeShippingRule && method.id === "standard") || isFreeShippingPromo ? (
                             <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full text-xs font-bold">
                               Miễn phí
                             </span>

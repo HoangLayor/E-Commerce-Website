@@ -1070,6 +1070,7 @@ export interface OrderResponse {
   paymentUrl?: string;
   voucherCode?: string;
   discountAmount?: number;
+  shippingFee?: number;
   cancelReason?: string;
   isRefundRequested?: boolean;
   refundReason?: string;

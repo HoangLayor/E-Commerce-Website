@@ -20,6 +20,7 @@ public class OrderResponse {
     private LocalDateTime orderDate;
     private String voucherCode;
     private BigDecimal discountAmount;
+    private BigDecimal shippingFee;
     private String paymentUrl;
     private String cancelReason;
     private Boolean isRefundRequested;

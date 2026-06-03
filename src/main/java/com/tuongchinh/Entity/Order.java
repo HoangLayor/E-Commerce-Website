@@ -63,6 +63,9 @@ public class Order {
     @Column(name = "discount_amount")
     private BigDecimal discountAmount = BigDecimal.ZERO;
 
+    @Column(name = "shipping_fee")
+    private BigDecimal shippingFee = BigDecimal.ZERO;
+
     @Column(name = "is_sold_count_updated")
     private Boolean isSoldCountUpdated = false;
 

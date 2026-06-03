@@ -1070,6 +1070,7 @@ export interface OrderResponse {
   paymentUrl?: string;
   voucherCode?: string;
   discountAmount?: number;
+  shippingFee?: number;
   cancelReason?: string;
   isRefundRequested?: boolean;
   refundReason?: string;
@@ -1241,6 +1242,7 @@ export async function checkout(data: {
   addressId?: number;
   paymentMethod: string;
   voucherCode?: string;
+  shippingFee?: number;
 }): Promise<any> {
   const res = await fetch(`${API_BASE_URL}/api/user/orders/checkout`, {
     method: "POST",
