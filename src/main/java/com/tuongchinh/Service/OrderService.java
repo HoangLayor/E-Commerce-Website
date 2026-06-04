@@ -166,6 +166,7 @@ public class OrderService {
             orderItems.add(orderItem);
         }
         orderItemRepository.saveAll(orderItems);
+        order.setItems(orderItems);
 
         // 7. Lưu lịch sử dùng voucher
         if (appliedVoucher != null) {

@@ -390,7 +390,16 @@ export function CheckoutContent() {
       // Auto select the new address
       const newAddr = addrs[addrs.length - 1];
       if (newAddr) {
-        handleAddressSelect(newAddr.id.toString());
+        setSelectedAddressId(newAddr.id);
+        setFormData(prev => ({
+          ...prev,
+          firstName: newAddr.receiverName,
+          phone: newAddr.phone,
+          address: newAddr.address,
+          ward: "",
+          district: "",
+          city: ""
+        }));
       }
 
       setIsAddAddressDialogOpen(false);

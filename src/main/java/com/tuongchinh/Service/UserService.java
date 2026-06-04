@@ -120,13 +120,18 @@ public class UserService {
     public String extractToken(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
+        String token = null;
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("token".equals(cookie.getName())) {
-                    return cookie.getValue();
+                    token = cookie.getValue();
                 }
             }
+        }
+        
+        if (token != null) {
+            return token;
         }
 
         throw new RuntimeException("Token not found in cookies");

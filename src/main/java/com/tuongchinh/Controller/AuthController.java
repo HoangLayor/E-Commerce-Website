@@ -67,16 +67,16 @@ public class AuthController {
                     .body("Sai email hoặc mật khẩu");
         }
         String jwt = jwtService.generateToken(String.valueOf(user.getId()));
-        
+
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from("token", jwt)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .maxAge(60 * 60)
                 .sameSite("None");
-                
+
         applyCookieDomain(cookieBuilder, httpRequest);
-        
+
         ResponseCookie cookie = cookieBuilder.build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok(Map.of(
@@ -98,9 +98,9 @@ public class AuthController {
                 .path("/")
                 .maxAge(0)
                 .sameSite("None");
-                
+
         applyCookieDomain(cookieBuilder, httpRequest);
-        
+
         ResponseCookie cookie = cookieBuilder.build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

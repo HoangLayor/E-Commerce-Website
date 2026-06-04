@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchPageBySlug, PageResponseDTO } from "@/lib/api";
+import { fetchPageBySlug, PageResponseDTO, fetchSettings } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import {
   Select,
@@ -30,32 +30,7 @@ import {
   Instagram,
 } from "lucide-react";
 
-const contactInfo = [
-  {
-    icon: MapPin,
-    title: "Địa chỉ",
-    content: "123 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
-    link: "https://maps.google.com",
-  },
-  {
-    icon: Phone,
-    title: "Điện thoại",
-    content: "1900 1234 (8:00 - 22:00)",
-    link: "tel:19001234",
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    content: "support@glowskin.vn",
-    link: "mailto:support@glowskin.vn",
-  },
-  {
-    icon: Clock,
-    title: "Giờ làm việc",
-    content: "T2 - CN: 8:00 - 22:00",
-    link: null,
-  },
-];
+// Removed static contactInfo
 
 const faqs = [
   {
@@ -90,19 +65,62 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const [settings, setSettings] = useState<Record<string, string>>({});
+
   useEffect(() => {
-    async function loadPage() {
+    async function loadData() {
       try {
-        const data = await fetchPageBySlug("contact");
-        setDbPage(data);
+        const [pageData, settingsData] = await Promise.all([
+          fetchPageBySlug("contact").catch(() => null),
+          fetchSettings().catch(() => [])
+        ]);
+        
+        if (pageData) {
+          setDbPage(pageData);
+        }
+        
+        if (settingsData && settingsData.length > 0) {
+          const settingsMap = settingsData.reduce((acc: Record<string, string>, curr) => {
+            acc[curr.key] = curr.value;
+            return acc;
+          }, {});
+          setSettings(settingsMap);
+        }
       } catch (error) {
-        console.error("Failed to load DB page:", error);
+        console.error("Failed to load contact page data:", error);
       } finally {
         setLoading(false);
       }
     }
-    loadPage();
+    loadData();
   }, []);
+
+  const dynamicContactInfo = [
+    {
+      icon: MapPin,
+      title: "Địa chỉ",
+      content: settings["store_address"] || "123 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
+      link: "https://maps.google.com",
+    },
+    {
+      icon: Phone,
+      title: "Điện thoại",
+      content: settings["contact_phone"] || "1900 1234 (8:00 - 22:00)",
+      link: `tel:${settings["contact_phone"]?.replace(/\D/g, "") || "19001234"}`,
+    },
+    {
+      icon: Mail,
+      title: "Email",
+      content: settings["contact_email"] || "support@glowskin.vn",
+      link: `mailto:${settings["contact_email"] || "support@glowskin.vn"}`,
+    },
+    {
+      icon: Clock,
+      title: "Giờ làm việc",
+      content: settings["contact_working_hours"] || "T2 - CN: 8:00 - 22:00",
+      link: null,
+    },
+  ];
 
   const getSection = (type: string, titlePattern?: string) => {
     return dbPage?.sections.find(s => {
@@ -164,7 +182,7 @@ export default function ContactPage() {
         <section className="py-12 -mt-8 relative z-10">
           <div className="container mx-auto px-4">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {contactInfo.map((info, index) => (
+              {dynamicContactInfo.map((info, index) => (
                 <Card key={index} className="border-0 shadow-md hover:shadow-lg transition-shadow">
                   <CardContent className="pt-6">
                     <div className="flex items-start gap-4">
@@ -334,7 +352,7 @@ export default function ContactPage() {
                   ) : (
                     <div className="rounded-2xl overflow-hidden h-[300px] lg:h-[400px] bg-muted relative">
                       <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4469!2d106.7000!3d10.7730!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ2JzIyLjgiTiAxMDbCsDQyJzAwLjAiRQ!5e0!3m2!1sen!2s!4v1234567890"
+                        src={settings["contact_map_iframe"] || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4469!2d106.7000!3d10.7730!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ2JzIyLjgiTiAxMDbCsDQyJzAwLjAiRQ!5e0!3m2!1sen!2s!4v1234567890"}
                         width="100%"
                         height="100%"
                         style={{ border: 0 }}
