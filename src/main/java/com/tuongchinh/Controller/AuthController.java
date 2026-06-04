@@ -36,9 +36,28 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
+    private void applyCookieDomain(ResponseCookie.ResponseCookieBuilder builder, HttpServletRequest request) {
+        String origin = request.getHeader("Origin");
+        if (origin != null && !origin.contains("localhost") && !origin.contains("127.0.0.1")) {
+            try {
+                java.net.URI uri = new java.net.URI(origin);
+                String host = uri.getHost();
+                if (host != null) {
+                    if (host.startsWith("www.")) {
+                        host = host.substring(4);
+                    }
+                    builder.domain("." + host);
+                }
+            } catch (Exception e) {
+                // Ignore parse errors
+            }
+        }
+    }
+
     @PostMapping("author/login")
     public ResponseEntity<?> login(
             @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest,
             HttpServletResponse response) {
         User user = userService.findByEmail(request.getEmail());
 
@@ -48,13 +67,17 @@ public class AuthController {
                     .body("Sai email hoặc mật khẩu");
         }
         String jwt = jwtService.generateToken(String.valueOf(user.getId()));
-        ResponseCookie cookie = ResponseCookie.from("token", jwt)
+        
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from("token", jwt)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .maxAge(60 * 60)
-                .sameSite("None")
-                .build();
+                .sameSite("None");
+                
+        applyCookieDomain(cookieBuilder, httpRequest);
+        
+        ResponseCookie cookie = cookieBuilder.build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok(Map.of(
                 "message", "Đăng nhập thành công",
@@ -68,14 +91,17 @@ public class AuthController {
     }
 
     @PostMapping("author/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        ResponseCookie cookie = ResponseCookie.from("token", "")
+    public ResponseEntity<?> logout(HttpServletRequest httpRequest, HttpServletResponse response) {
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from("token", "")
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .maxAge(0)
-                .sameSite("None")
-                .build();
+                .sameSite("None");
+                
+        applyCookieDomain(cookieBuilder, httpRequest);
+        
+        ResponseCookie cookie = cookieBuilder.build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok().body("Logout successful");

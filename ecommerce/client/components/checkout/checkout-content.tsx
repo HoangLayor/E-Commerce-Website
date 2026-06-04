@@ -66,6 +66,7 @@ import {
   type AddressResponse,
   type AddressRequest
 } from "@/lib/api";
+import { useCart } from "@/contexts/cart-context";
 import { useEffect } from "react";
 
 const steps = [
@@ -130,6 +131,7 @@ export function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedItemIds = searchParams.get("items")?.split(",") || [];
+  const { loadCart } = useCart();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -455,6 +457,9 @@ export function CheckoutContent() {
         voucherCode: appliedVoucherResult?.code,
         shippingFee: shipping,
       });
+      
+      // Đồng bộ hoá lại giỏ hàng (xoá các món đã đặt thành công)
+      await loadCart();
 
       toast.success("Đặt hàng thành công!");
 
@@ -647,21 +652,9 @@ export function CheckoutContent() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="address" className="text-sm font-medium">
-                    Địa chỉ <span className="text-rose-500">*</span>
+                  <Label htmlFor="address-select" className="text-sm font-medium">
+                    Địa chỉ giao hàng <span className="text-rose-500">*</span>
                   </Label>
-                  <div className="relative">
-                    <Input
-                      id="address"
-                      name="address"
-                      placeholder="Số nhà, tên đường"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className="rounded-lg border-primary/15 focus:border-primary focus:ring-primary/20 pr-10"
-                      required
-                    />
-                    <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/50" />
-                  </div>
 
                   {userAddresses.length > 0 ? (
                     <div className="mt-3 p-3 rounded-xl bg-gradient-to-br from-primary-light/10 to-transparent border border-primary/5 space-y-2">
