@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     locale: 'vi_VN',
     siteName: 'GlowSkin',
   },
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_STORE_URL || "http://localhost:3000"),
 }
 
 export const viewport: Viewport = {

@@ -92,6 +92,7 @@ public class AuthController {
         userRequest.setPhone(user.getPhone());
         userRequest.setImageUrl(user.getImageUrl());
         userRequest.setGender(user.getGender());
+        userRequest.setRole(user.getRole());
         return userRequest;
     }
 

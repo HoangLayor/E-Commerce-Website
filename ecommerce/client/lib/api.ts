@@ -126,6 +126,7 @@ export interface UserProfileResponse {
   email: string;
   imageUrl?: string | null;
   gender?: "male" | "female" | null;
+  role?: string;
 }
 
 export interface Voucher {

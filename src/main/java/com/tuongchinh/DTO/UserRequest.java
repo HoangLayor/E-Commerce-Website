@@ -12,4 +12,5 @@ public class UserRequest {
     private String address;
     private String imageUrl;
     private String gender;
+    private String role;
 }

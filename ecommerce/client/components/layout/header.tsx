@@ -415,6 +415,13 @@ export function Header({ config }: { config?: HeaderConfig }) {
                     <DropdownMenuItem asChild>
                       <Link href="/account/orders" className="cursor-pointer">Đơn hàng</Link>
                     </DropdownMenuItem>
+                    {user.role === 'ADMIN' && (
+                      <DropdownMenuItem asChild>
+                        <Link href={process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001"} className="cursor-pointer font-bold text-primary">
+                          Trang quản trị
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
                       className="text-destructive focus:text-destructive cursor-pointer"
@@ -707,6 +714,15 @@ export function Header({ config }: { config?: HeaderConfig }) {
                   >
                     Đơn hàng
                   </Link>
+                  {user.role === 'ADMIN' && (
+                    <Link
+                      href={process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001"}
+                      className="block py-2 text-primary font-bold hover:text-primary/80"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Trang quản trị (Admin)
+                    </Link>
+                  )}
                   <button
                     className="block w-full text-left py-2 text-destructive hover:text-destructive/80"
                     onClick={() => {
